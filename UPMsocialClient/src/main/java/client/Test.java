@@ -15,12 +15,9 @@ import org.glassfish.jersey.client.ClientConfig;
 //import javax.ws.rs.representation.Form;
 
 import model.Usuario;
-import model.UsuarioList;
 import model.Post;
-import model.PostList;
 
 import java.util.Date;
-import java.util.Iterator;
 
 public class Test {
 	
@@ -35,10 +32,10 @@ public class Test {
 		    Response response = target.path("usuarios").request()
 		    		.accept(MediaType.TEXT_HTML)
 		    		.post(Entity.xml(usuario),Response.class);
-		    System.out.println(response.getStatus());
+		    System.out.println("Create new user: " + response.getStatus());
 			if(response.getHeaders().containsKey("Location")) {
 				Object location = response.getHeaders().get("Location").get(0);
-				System.out.println("Location: " + location.toString());
+				System.out.println("Create new user: " + location.toString());
 			}  
 		    
 		    // Publicar un post nuevo (o varios)
@@ -49,10 +46,10 @@ public class Test {
 		    		.path("0").path("posts")
 		    		.request().accept(MediaType.TEXT_HTML)
 		    		.post(Entity.xml(post),Response.class);
-		    System.out.println(response.getStatus());
+		    System.out.println("Publish new post: " + response.getStatus());
 			if(response.getHeaders().containsKey("Location")) {
 				Object location = response.getHeaders().get("Location").get(0);
-				System.out.println("Location: " + location.toString());
+				System.out.println("Publish new post: " + location.toString());
 			}  
 		    
 		    
@@ -67,17 +64,17 @@ public class Test {
 		    		.path("0").path("posts").path(String.valueOf(post.getId()))
 		    		.request().accept(MediaType.APPLICATION_XML)
 		    		.put(Entity.xml(post),Response.class);
-		    System.out.println(response.getStatus());
+		    System.out.println("Modify post: " + response.getStatus());
 			if(response.getHeaders().containsKey("Location")) {
 				Object location = response.getHeaders().get("Location").get(0);
-				System.out.println("Location: " + location.toString());
+				System.out.println("Modify post: " + location.toString());
 			}  
 		    
 		    // Borrar un post 
 		    response = target.path("usuarios")
 		    		.path("0").path("posts").path(String.valueOf(post.getId()))
 		    		.request().delete();
-		    System.out.println(response.getStatus());
+		    System.out.println("Delete post: " + response.getStatus());
 		    
 		    // TODO: Buscar posibles amigos entre los usuarios
 		    
@@ -90,7 +87,7 @@ public class Test {
 		    		.path(String.valueOf(usuario.getId())).path("amigos")
 		    		.path(String.valueOf(amigo.getId()))
 		    		.request().delete();
-		    System.out.println(response.getStatus());
+		    System.out.println("Delete amigo: " + response.getStatus());
 		    
 		    // TODO: Obtener la lista de amigos usando los filtros disponibles
 		    
@@ -100,8 +97,8 @@ public class Test {
 		    		.request().accept(MediaType.APPLICATION_XML)
 		    		.get(String.class);
 		    */
-		    // TODO: Obtener la lista de usuarios
-		    System.out.println(target.path("usuarios").request()
+		    // Obtener la lista de usuarios
+		    System.out.println("Get users: " + target.path("usuarios").request()
 		        .accept(MediaType.APPLICATION_XML).get(String.class));
 
 		    // TODO: Modificar los datos de nuestro perfil
@@ -110,6 +107,7 @@ public class Test {
 		    response = target.path("usuarios")
 		    	.path("1").request().accept(MediaType.APPLICATION_XML)
 		    	.put(Entity.xml(usuario),Response.class);
+		    System.out.println("Modify our profile: " + response.getStatus());
 		    
 		    // TODO: Darse de baja de la redsocial
 		    
