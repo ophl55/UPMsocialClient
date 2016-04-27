@@ -40,7 +40,7 @@ public class Test {
 		    
 		    // Publicar un post nuevo (o varios)
 		    Post post = new Post("Post Blabla");
-		    post.setDate(new Date());
+		    post.setDate("2016-04-30");
 		    post.setUserId(0);
 		    response = target.path("usuarios")
 		    		.path("0").path("posts")
@@ -52,14 +52,25 @@ public class Test {
 				System.out.println("Publish new post: " + location.toString());
 			}  
 		    
-		    
-		    // TODO: Obtener mis posts usando los filtros disponibles 
+		    // Obtener mis posts usando los filtros disponibles 
 		    // (en este caso, el cliente debe poder optar  por  obtener  
 		    // la  lista  de  identificadores  de  esos  posts  o  bien 
 		    // directamente el contenido de dichos posts)
+			System.out.println("Get my posts: " + 
+					target.path("usuarios").path("0").path("posts")
+						.queryParam("startDate", "2016-04-27")
+						.queryParam("endDate", "2016-04-28")
+						.queryParam("start", "0")
+						.queryParam("end", "4")
+						.request()
+			        .accept(MediaType.APPLICATION_XML).get(String.class)
+			        );
+			
 		    
 		    // Modificar un post
 		    post = new Post("Post Blubb");
+		    post.setId(4);
+		    post.setDate("2016-04-29");
 		    response = target.path("usuarios")
 		    		.path("0").path("posts").path(String.valueOf(post.getId()))
 		    		.request().accept(MediaType.APPLICATION_XML)
@@ -72,7 +83,7 @@ public class Test {
 		    
 		    // Borrar un post 
 		    response = target.path("usuarios")
-		    		.path("0").path("posts").path(String.valueOf(post.getId()))
+		    		.path("0").path("posts").path("0")
 		    		.request().delete();
 		    System.out.println("Delete post: " + response.getStatus());
 		    
