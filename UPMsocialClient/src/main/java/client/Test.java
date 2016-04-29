@@ -17,8 +17,6 @@ import org.glassfish.jersey.client.ClientConfig;
 import model.Usuario;
 import model.Post;
 
-import java.util.Date;
-
 public class Test {
 	
 	  public static void main(String[] args) {
@@ -28,7 +26,6 @@ public class Test {
 	
 		    // Crear un usuario nuevo
 		    Usuario usuario = new Usuario("Blabla");
-		    usuario.setId(3);
 		    Response response = target.path("usuarios").request()
 		    		.accept(MediaType.TEXT_HTML)
 		    		.post(Entity.xml(usuario),Response.class);
@@ -40,10 +37,9 @@ public class Test {
 		    
 		    // Publicar un post nuevo (o varios)
 		    Post post = new Post("Post Blabla");
-		    post.setDate("2016-04-30");
-		    post.setUserId(0);
+		    post.setUserId(1);
 		    response = target.path("usuarios")
-		    		.path("0").path("posts")
+		    		.path("1").path("posts")
 		    		.request().accept(MediaType.TEXT_HTML)
 		    		.post(Entity.xml(post),Response.class);
 		    System.out.println("Publish new post: " + response.getStatus());
@@ -57,7 +53,7 @@ public class Test {
 		    // la  lista  de  identificadores  de  esos  posts  o  bien 
 		    // directamente el contenido de dichos posts)
 			System.out.println("Get my posts: " + 
-					target.path("usuarios").path("0").path("posts")
+					target.path("usuarios").path("1").path("posts")
 						.queryParam("startDate", "2016-04-27")
 						.queryParam("endDate", "2016-04-28")
 						.queryParam("start", "0")
@@ -71,8 +67,9 @@ public class Test {
 		    post = new Post("Post Blubb");
 		    post.setId(4);
 		    post.setDate("2016-04-29");
+		    post.setUserId(1);
 		    response = target.path("usuarios")
-		    		.path("0").path("posts").path(String.valueOf(post.getId()))
+		    		.path("1").path("posts").path(String.valueOf(post.getId()))
 		    		.request().accept(MediaType.APPLICATION_XML)
 		    		.put(Entity.xml(post),Response.class);
 		    System.out.println("Modify post: " + response.getStatus());
@@ -83,7 +80,7 @@ public class Test {
 		    
 		    // Borrar un post 
 		    response = target.path("usuarios")
-		    		.path("0").path("posts").path("0")
+		    		.path("1").path("posts").path("7")
 		    		.request().delete();
 		    System.out.println("Delete post: " + response.getStatus());
 		    
