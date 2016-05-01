@@ -25,7 +25,7 @@ public class Test {
 		    WebTarget target = client.target(getBaseURI());
 	
 		    // Crear un usuario nuevo
-		    Usuario usuario = new Usuario("Blabla");
+		    Usuario usuario = new Usuario("Usuario_Client");
 		    Response response = target.path("usuarios").request()
 		    		.accept(MediaType.TEXT_HTML)
 		    		.post(Entity.xml(usuario),Response.class);
@@ -36,7 +36,7 @@ public class Test {
 			}  
 		    
 		    // Publicar un post nuevo (o varios)
-		    Post post = new Post("Post Blabla");
+		    Post post = new Post("Post_Client");
 		    post.setUserId(1);
 		    response = target.path("usuarios")
 		    		.path("1").path("posts")
@@ -64,9 +64,9 @@ public class Test {
 			
 		    
 		    // Modificar un post
-		    post = new Post("Post Blubb");
+		    post = new Post("Post_Client_Modificado");
 		    post.setId(4);
-		    post.setDate("2016-04-29");
+		    post.setDate("2016-05-02");
 		    post.setUserId(1);
 		    response = target.path("usuarios")
 		    		.path("1").path("posts").path(String.valueOf(post.getId()))
@@ -80,47 +80,81 @@ public class Test {
 		    
 		    // Borrar un post 
 		    response = target.path("usuarios")
-		    		.path("1").path("posts").path("7")
+		    		.path("1").path("posts").path("2")
 		    		.request().delete();
 		    System.out.println("Delete post: " + response.getStatus());
 		    
-		    // TODO: Buscar posibles amigos entre los usuarios
+		    // Buscar posibles amigos entre los usuarios
+		    System.out.println("Get possible amigos: " + 
+					target.path("usuarios").path("1").path("posiblesAmigos")
+						.request()
+			        .accept(MediaType.APPLICATION_XML).get(String.class)
+			        );
 		    
-		    // TODO: Agregar un amigo
-		    // nur die usuarioID senden?
-		    Usuario amigo = new Usuario("amigo_1");
+		    // Agregar un amigo
+		    Usuario amigo = usuario;
+		    amigo.setId(5);
+		    response = target.path("usuarios").path("1").path("amigos")
+		    		.request()
+		    		.accept(MediaType.TEXT_HTML)
+		    		.post(Entity.xml(amigo),Response.class);
+		    System.out.println("Added new amigo: " + response.getStatus());
+			if(response.getHeaders().containsKey("Location")) {
+				Object location = response.getHeaders().get("Location").get(0);
+				System.out.println("Added new amigo: " + location.toString());
+			}  
 		    
-		    // TODO: Eliminar a un amigo
-		    response = target.path("usuarios")
-		    		.path(String.valueOf(usuario.getId())).path("amigos")
-		    		.path(String.valueOf(amigo.getId()))
+		    // Eliminar a un amigo
+		    response = target.path("usuarios").path("1").path("amigos").path("5")
 		    		.request().delete();
 		    System.out.println("Delete amigo: " + response.getStatus());
 		    
-		    // TODO: Obtener la lista de amigos usando los filtros disponibles
+		    // Obtener la lista de amigos usando los filtros disponibles
+		    System.out.println("Get my amigos: " + 
+					target.path("usuarios").path("1").path("amigos")
+						.queryParam("name", "u2")
+						.queryParam("start", "0")
+						.queryParam("end", "4")
+						.request()
+			        .accept(MediaType.APPLICATION_XML).get(String.class)
+			        );
 		    
-		    // TODO: Consultar número de posts publicados por mí en un periodo
-		    /*response = target.path("usuarios")
-		    		.path(usuario.getId()).path("posts").path("count") // es fehlt der Filter für die Periode
-		    		.request().accept(MediaType.APPLICATION_XML)
-		    		.get(String.class);
-		    */
+		    // Consultar número de posts publicados por mí en un periodo
+		    System.out.println("Get number of my posts published in a period: " + 
+					target.path("usuarios").path("1").path("posts").path("count")
+						.queryParam("startDate", "2016-04-27")
+						.queryParam("endDate", "2016-04-28")
+						.request()
+			        .accept(MediaType.TEXT_HTML).get(String.class)
+			        );
+		    
 		    // Obtener la lista de usuarios
 		    System.out.println("Get users: " + target.path("usuarios").request()
 		        .accept(MediaType.APPLICATION_XML).get(String.class));
 
-		    // TODO: Modificar los datos de nuestro perfil
-		    usuario = new Usuario("Hostia, que bien funciona!");
+		    // Modificar los datos de nuestro perfil
+		    usuario = new Usuario("Usuario_Client_Modificado!");
 		    usuario.setId(1);
 		    response = target.path("usuarios")
 		    	.path("1").request().accept(MediaType.APPLICATION_XML)
 		    	.put(Entity.xml(usuario),Response.class);
 		    System.out.println("Modify our profile: " + response.getStatus());
 		    
-		    // TODO: Darse de baja de la redsocial
+		    // Darse de baja de la redsocial
+		    response = target.path("usuarios").path("1")
+		    		.request().delete();
+		    System.out.println("Delete post: " + response.getStatus());
 		    
-		    // TODO: Obtener la lista de posts publicados por amigos que contienen un determinadotexto
-		    
+		    // Obtener la lista de posts publicados por amigos que contienen un determinadotexto
+		    System.out.println("Get posts of my amigos: " + 
+					target.path("usuarios").path("1").path("amigos").path("posts")
+						.queryParam("dt", "2016-04-30")
+						.queryParam("content", "p")
+						.queryParam("start", "0")
+						.queryParam("end", "4")
+						.request()
+			        .accept(MediaType.APPLICATION_XML).get(String.class)
+			        );
 	  }
 
 	  private static URI getBaseURI() {
